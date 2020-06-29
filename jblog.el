@@ -121,8 +121,8 @@ Assume that all files are generated via jblog."
                     (aset entries i `(,date
                                       action ,open-it)))
                    (k
-                    ;; When other header fields are missing, use "nil" instead
-                    (aset entries i `(,(or (cdr (assoc k hdr-map)) "nil")
+                    ;; When other header fields are missing, use "-" instead
+                    (aset entries i `(,(or (cdr (assoc k hdr-map)) "-")
                                       action ,open-it))))))
       (list file entries))))
 
