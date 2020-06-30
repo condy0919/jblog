@@ -47,6 +47,10 @@ Or use [use-package](https://github.com/jwiegley/use-package) with
 
 Then run `jblog` to get an overview of your blog posts.
 
+## Note
+
+- The filename of blog posts must be `YYYY-mm-dd` prefixed.
+
 ## Keybindings
 
 | Key          | Function                                             |
@@ -63,8 +67,11 @@ Then run `jblog` to get an overview of your blog posts.
 - `jblog-post-default-ext` (Default: `md`)
 - `jblog-post-exts-regexp` (Default: a regexp matched with `md` and `markdown`)
 - `jblog-post-headers` (Default: Only list `Date` and `Title` fields)
+- `jblog-post-headers-guard` (Default: `---`)
 - `jblog-post-headers-format`
 - `jblog-post-sort-key`
+
+`describe-variable` will tell you.
 
 ## Screenshots
 

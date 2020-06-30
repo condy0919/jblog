@@ -75,13 +75,18 @@ title: %s
   :group 'jblog
   :type 'string)
 
+(defcustom jblog-post-headers-guard "---"
+  "The headers guard."
+  :group 'jblog
+  :type 'string)
+
 (defconst jblog--buffer-name "*JBlog*"
   "JBlog major buffer name.")
 
 (defun jblog--extract-headers-from-file (file)
-  "Extracts all headers from FILE.
-Assume that all files are generated via jblog."
-  ;; Generate regexp from `jblog-post-headers-format'
+  "Extract all headers from FILE.
+Assume that FILE is created via jblog."
+  ;; Generate a regexp from `jblog-post-headers-format'
   (let* ((lines (split-string jblog-post-headers-format "\n" t "\\s-"))
          (hdrs (cl-loop for s in lines
                         when (string-match "^\\(.+\\):\\(.+\\)$" s)
@@ -89,14 +94,16 @@ Assume that all files are generated via jblog."
          (hdr-map))
     (with-temp-buffer
       (insert-file-contents file)
-      (let ((content (buffer-string)))
+      (when-let* ((start (search-forward jblog-post-headers-guard))
+                  (end (search-forward jblog-post-headers-guard))
+                  (content (delete-and-extract-region start end)))
         (dolist (hdr hdrs)
           (when (string-match (format "%s.*:\\(.+\\)$" hdr) content)
             (push `(,hdr . ,(string-trim (match-string 1 content))) hdr-map)))))
     hdr-map))
 
 (defun jblog--retrieve-date-from-file (file)
-  "Retrieve the YYYY-mm-dd date from FILE."
+  "Retrieve the YYYY-mm-dd date from FILE (actuall from file name)."
   (let ((regexp "\\([0-9]\\{4\\}-[0-9]\\{2\\}-[0-9]\\{2\\}\\)"))
     (and (string-match regexp file)
          (match-string 1 file))))
@@ -129,7 +136,7 @@ Assume that all files are generated via jblog."
 (defun jblog-create (title permalink)
   "Create a new blog post with TITLE which can be visited by PERMALINK."
   (interactive "sTitle: \nsPermalink for post '%s': \n")
-  (let* ((date (format-time-string "%Y-%m-%d"))
+  (let* ((date (format-time-string "%4Y-%2m-%2d"))
          (filename (format "%s-%s.%s" date permalink jblog-post-default-ext))
          (header (format jblog-post-headers-format title)))
     (find-file (expand-file-name filename jblog-posts-directory))
