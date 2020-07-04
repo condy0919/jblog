@@ -94,9 +94,9 @@ Assume that FILE is created via jblog."
          (hdr-map))
     (with-temp-buffer
       (insert-file-contents file)
-      (when-let* ((start (search-forward jblog-post-headers-guard))
+      (when-let* ((beg (search-forward jblog-post-headers-guard))
                   (end (search-forward jblog-post-headers-guard))
-                  (content (delete-and-extract-region start end)))
+                  (content (delete-and-extract-region beg end)))
         (dolist (hdr hdrs)
           (when (string-match (format "%s.*:\\(.+\\)$" hdr) content)
             (push `(,hdr . ,(string-trim (match-string 1 content))) hdr-map)))))
@@ -172,10 +172,10 @@ Assume that FILE is created via jblog."
                        (lambda (x)
                          (cl-destructuring-bind (file ents) x
                            (let* ((filename (file-name-nondirectory file))
-                                  (metas (cl-loop for i below (length ents)
-                                                  collect (car (elt ents i)))))
+                                  (hdrs (cl-loop for i below (length ents)
+                                                 collect (car (elt ents i)))))
                              (string-match-p keyword
-                                             (mapconcat 'identity `(,filename ,@metas) "|")))))
+                                             (mapconcat 'identity `(,filename ,@hdrs) " ")))))
                        entries)))
       (setq tabulated-list-sort-key jblog-post-sort-key)
       (setq tabulated-list-entries entries)

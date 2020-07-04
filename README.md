@@ -47,7 +47,7 @@ Or use [use-package](https://github.com/jwiegley/use-package) with
 
 Then run `jblog` to get an overview of your blog posts.
 
-## Note
+## Notes
 
 - The filename of blog posts must be `YYYY-mm-dd` prefixed.
 - The headers of blog posts are case-insensitive.
