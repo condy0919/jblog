@@ -90,7 +90,7 @@ Assume that FILE is created via jblog."
   (let* ((lines (split-string jblog-post-headers-format "\n" t "\\s-"))
          (hdrs (cl-loop for s in lines
                         when (string-match "^\\(.+\\):\\(.+\\)$" s)
-                        collect (string-trim (match-string 1 s))))
+                        collect (downcase (string-trim (match-string 1 s)))))
          (hdr-map))
     (with-temp-buffer
       (insert-file-contents file)
