@@ -220,6 +220,9 @@ Assume that FILE is created via jblog."
 (defun jblog ()
   "Start jblog."
   (interactive)
+  (unless jblog-posts-directory
+    (error "Please set jblog-posts-directory variable"))
+  (setq default-directory jblog-posts-directory)
   (with-current-buffer (get-buffer-create jblog--buffer-name)
     (jblog-mode))
   (switch-to-buffer jblog--buffer-name))
