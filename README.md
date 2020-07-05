@@ -58,6 +58,7 @@ Then run `jblog` to get an overview of your blog posts.
 |--------------|------------------------------------------------------|
 | <kbd>C</kbd> | `jblog-create` a new blog post                       |
 | <kbd>D</kbd> | `jblog-delete` the blog post at point                |
+| <kbd>O</kbd> | `jblog-open-posts-directory` with `dired`            |
 | <kbd>s</kbd> | `jblog-search` keywords from date, title, ... fields |
 | <kbd>g</kbd> | `jblog-refresh`                                      |
 | <kbd>q</kbd> | `quit-window`                                        |
