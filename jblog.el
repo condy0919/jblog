@@ -136,6 +136,8 @@ Assume that FILE is created via jblog."
 (defun jblog-create (title permalink)
   "Create a new blog post with TITLE which can be visited by PERMALINK."
   (interactive "sTitle: \nsPermalink for post '%s': \n")
+  (unless jblog-posts-directory
+    (error "Please set jblog-posts-directory variable"))
   (let* ((date (format-time-string "%4Y-%2m-%2d"))
          (filename (format "%s-%s.%s" date permalink jblog-post-default-ext))
          (header (format jblog-post-headers-format title)))
@@ -146,6 +148,8 @@ Assume that FILE is created via jblog."
 (defun jblog-delete ()
   "Delete post."
   (interactive)
+  (unless jblog-posts-directory
+    (error "Please set jblog-posts-directory variable"))
   (let ((file (tabulated-list-get-id)))
     (when (y-or-n-p (format "Really delete '%s'? " file))
       (when-let* ((buf (find-buffer-visiting file)))
@@ -156,11 +160,15 @@ Assume that FILE is created via jblog."
 (defun jblog-search ()
   "Search posts."
   (interactive)
+  (unless jblog-posts-directory
+    (error "Please set jblog-posts-directory variable"))
   (jblog-refresh (read-from-minibuffer "Search filter: ")))
 
 (defun jblog-refresh (&optional keyword remember-pos update)
   "Refresh with &optional KEYWORD REMEMBER-POS UPDATE."
   (interactive)
+  (unless jblog-posts-directory
+    (error "Please set jblog-posts-directory variable"))
   (with-current-buffer (get-buffer-create jblog--buffer-name)
     (let* ((posts (directory-files jblog-posts-directory t jblog-post-exts-regexp))
            (entries (mapcar 'jblog--post-entries posts)))
@@ -181,6 +189,13 @@ Assume that FILE is created via jblog."
       (setq tabulated-list-entries entries)
       (tabulated-list-print remember-pos update))))
 
+(defun jblog-open-posts-directory ()
+  "Open `jblog-posts-directory' with `dired'."
+  (interactive)
+  (unless jblog-posts-directory
+    (error "Please set jblog-posts-directory variable"))
+  (dired jblog-posts-directory))
+
 (defvar jblog-mode-map
   (let ((map (make-sparse-keymap)))
     (set-keymap-parent map tabulated-list-mode-map)
@@ -189,6 +204,7 @@ Assume that FILE is created via jblog."
     (define-key map "g" 'jblog-refresh)
     (define-key map "C" 'jblog-create)
     (define-key map "D" 'jblog-delete)
+    (define-key map "O" 'jblog-open-posts-directory)
     map)
   "JBlog mode map.")
 
