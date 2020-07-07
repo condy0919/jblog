@@ -99,7 +99,7 @@ Assume that FILE is created via jblog."
                   (content (delete-and-extract-region beg end)))
         (dolist (hdr hdrs)
           (when (string-match (format "%s.*:\\(.+\\)$" hdr) content)
-            (push `(,hdr . ,(string-trim (match-string 1 content))) hdr-map)))))
+            (push (cons hdr (string-trim (match-string 1 content))) hdr-map)))))
     hdr-map))
 
 (defun jblog--retrieve-date-from-file (file)
@@ -143,7 +143,7 @@ Assume that FILE is created via jblog."
          (header (format jblog-post-headers-format title)))
     (find-file (expand-file-name filename jblog-posts-directory))
     (insert header)
-    (newline)))
+    (insert "\n")))
 
 (defun jblog-delete ()
   "Delete post."
@@ -183,7 +183,7 @@ Assume that FILE is created via jblog."
                                   (hdrs (cl-loop for i below (length ents)
                                                  collect (car (elt ents i)))))
                              (string-match-p keyword
-                                             (mapconcat 'identity `(,filename ,@hdrs) " ")))))
+                                             (string-join (cons filename hdrs) " ")))))
                        entries)))
       (setq tabulated-list-sort-key jblog-post-sort-key)
       (setq tabulated-list-entries entries)
@@ -222,10 +222,10 @@ Assume that FILE is created via jblog."
   (interactive)
   (unless jblog-posts-directory
     (error "Please set jblog-posts-directory variable"))
-  (setq default-directory jblog-posts-directory)
   (with-current-buffer (get-buffer-create jblog--buffer-name)
+    (setq default-directory jblog-posts-directory)
     (jblog-mode))
-  (switch-to-buffer jblog--buffer-name))
+  (pop-to-buffer-same-window jblog--buffer-name))
 
 (provide 'jblog)
 
